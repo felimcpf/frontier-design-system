@@ -1,0 +1,36 @@
+import React from 'react'
+import type { Preview, Decorator } from '@storybook/react'
+import { ThemeProvider, type ProductTheme } from '../src/themes/ThemeProvider'
+
+const PRODUCTS: ProductTheme[] = ['agent-central', 'doc-central', 'nav-central', 'draft-central']
+
+const withTheme: Decorator = (Story, context) => {
+  const product = (context.globals.theme as ProductTheme) ?? 'agent-central'
+  return (
+    <ThemeProvider product={product}>
+      <Story />
+    </ThemeProvider>
+  )
+}
+
+const preview: Preview = {
+  tags: ['autodocs'],
+  decorators: [withTheme],
+  globalTypes: {
+    theme: {
+      description: 'Product theme',
+      defaultValue: 'agent-central',
+      toolbar: {
+        title: 'Theme',
+        icon: 'paintbrush',
+        items: PRODUCTS.map((p) => ({ value: p, title: p })),
+        dynamicTitle: true,
+      },
+    },
+  },
+  parameters: {
+    controls: { matchers: { color: /(background|color)$/i, date: /Date$/i } },
+  },
+}
+
+export default preview
